@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SmartAttend AI classroom attendance and engagement dashboard prototype">
+  <title>SmartAttend AI | Attendance Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">SA</div>
+      <div><strong>SmartAttend <span>AI</span></strong><small>CLASSROOM INSIGHTS</small></div>
+    </div>
+    <nav>
+      <a class="nav-link active" href="#dashboard"><span>▦</span> Dashboard</a>
+      <a class="nav-link" href="#attendance"><span>☑</span> Attendance</a>
+      <a class="nav-link" href="#insights"><span>✦</span> AI Insights</a>
+    </nav>
+    <div class="sidebar-note">
+      <div class="note-icon">i</div>
+      <div><strong>Prototype mode</strong><p>Attendance data stays in this browser unless you export it.</p></div>
+    </div>
+    <div class="sidebar-footer">SMARTATTEND AI · DEMO</div>
+  </aside>
+
+  <main class="main-content" id="dashboard">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">CLASSROOM MANAGEMENT</p>
+        <h1>Attendance dashboard</h1>
+        <p class="subtitle">Track daily attendance and turn class data into practical next steps.</p>
+      </div>
+      <div class="topbar-actions">
+        <label class="date-control">Attendance date
+          <input id="attendanceDate" type="date">
+        </label>
+        <button id="exportBtn" class="button button-secondary">↓ Export CSV</button>
+      </div>
+    </header>
+
+    <section class="stat-grid" aria-label="Attendance statistics">
+      <article class="stat-card">
+        <div class="stat-top"><span>Total students</span><span class="stat-icon blue">♙</span></div>
+        <div class="stat-value" id="totalStudents">0</div>
+        <div class="stat-caption">Students in your class list</div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-top"><span>Present today</span><span class="stat-icon green">✓</span></div>
+        <div class="stat-value" id="presentCount">0</div>
+        <div class="stat-caption"><span class="positive" id="presentPercent">0%</span> of class</div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-top"><span>Absent today</span><span class="stat-icon red">−</span></div>
+        <div class="stat-value" id="absentCount">0</div>
+        <div class="stat-caption">Follow-up may be needed</div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-top"><span>Late today</span><span class="stat-icon amber">◷</span></div>
+        <div class="stat-value" id="lateCount">0</div>
+        <div class="stat-caption">Marked as arrived late</div>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <article class="panel attendance-panel" id="attendance">
+        <div class="panel-heading">
+          <div><h2>Student attendance</h2><p>Update a student's status for the selected date.</p></div>
+          <span class="pill"><span class="live-dot"></span> Daily register</span>
+        </div>
+        <form id="addStudentForm" class="add-student-form">
+          <label class="sr-only" for="studentName">Student name</label>
+          <input id="studentName" type="text" maxlength="70" placeholder="Enter student name…" required>
+          <button class="button button-primary" type="submit">＋ Add student</button>
+        </form>
+        <div class="table-tools">
+          <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Search students…"></label>
+          <label class="filter-label" for="statusFilter">Filter
+            <select id="statusFilter">
+              <option value="all">All statuses</option>
+              <option value="Present">Present</option>
+              <option value="Absent">Absent</option>
+              <option value="Late">Late</option>
+              <option value="Unmarked">Unmarked</option>
+            </select>
+          </label>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>STUDENT</th><th>STATUS</th><th>UPDATE STATUS</th><th></th></tr></thead>
+            <tbody id="studentTableBody"></tbody>
+          </table>
+          <div id="emptyState" class="empty-state" hidden>
+            <div class="empty-icon">♙</div><strong>No students found</strong><p>Add a student or change your search/filter.</p>
+          </div>
+        </div>
+        <div class="table-footer"><span id="showingText">Showing 0 students</span><button id="resetDayBtn" class="text-button">Reset this day's statuses</button></div>
+      </article>
+
+      <aside class="right-column">
+        <article class="panel attendance-summary">
+          <div class="panel-heading"><div><h2>Attendance rate</h2><p>For the selected date</p></div></div>
+          <div class="donut-wrap">
+            <div class="donut" id="attendanceDonut"><div class="donut-center"><strong id="donutPercent">0%</strong><span>attendance</span></div></div>
+          </div>
+          <div class="legend">
+            <div><span class="legend-dot present-dot"></span> Present <strong id="legendPresent">0</strong></div>
+            <div><span class="legend-dot absent-dot"></span> Absent <strong id="legendAbsent">0</strong></div>
+            <div><span class="legend-dot late-dot"></span> Late <strong id="legendLate">0</strong></div>
+            <div><span class="legend-dot unmarked-dot"></span> Unmarked <strong id="legendUnmarked">0</strong></div>
+          </div>
+        </article>
+        <article class="panel quick-tips">
+          <div class="panel-heading"><div><h2>Quick actions</h2><p>Useful classroom tools</p></div></div>
+          <button class="quick-action" id="markAllPresent"><span class="quick-icon green">✓</span><span><strong>Mark all present</strong><small>Set every student to present</small></span><span class="chevron">›</span></button>
+          <button class="quick-action" id="openInsights"><span class="quick-icon purple">✦</span><span><strong>Generate class insights</strong><small>Summarize today's attendance</small></span><span class="chevron">›</span></button>
+        </article>
+      </aside>
+    </section>
+
+    <section class="panel insights-panel" id="insights">
+      <div class="panel-heading insight-heading">
+        <div><div class="section-kicker"><span>✦</span> SMART ASSISTANT</div><h2>Classroom engagement insights</h2><p>Get a summary and suggested follow-up actions based on your register.</p></div>
+        <span class="demo-badge">RULE-BASED DEMO</span>
+      </div>
+      <div class="insight-callout">
+        <div class="sparkle">✦</div>
+        <div><strong>Transparent insight mode</strong><p>This version uses simple rules and your attendance counts. It does <b>not</b> call an AI model. Connect an approved AI API through a secure backend to enable genuinely AI-generated reports.</p></div>
+      </div>
+      <div class="insight-actions">
+        <button id="generateInsightsBtn" class="button button-primary">✦ Generate attendance insights</button>
+        <span class="muted-small">No facial recognition or emotion detection.</span>
+      </div>
+      <div id="insightOutput" class="insight-output" aria-live="polite">
+        <div class="placeholder-icon">✧</div><p>Your class summary will appear here.</p><small>Mark attendance, then generate insights.</small>
+      </div>
+    </section>
+
+    <footer class="page-footer"><span>SmartAttend AI</span><span>Educational prototype · Use responsibly</span></footer>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
